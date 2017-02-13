@@ -1,4 +1,4 @@
-#include "GridPathPlanner.h"
+#include "AStar.h"
 
 AStar::AStar(PartiallyKnownGrid* grid, bool use_adaptive_a_star) {
 	height=grid->GetHeight();

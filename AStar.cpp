@@ -1,6 +1,6 @@
 #include "GridPathPlanner.h"
 
-GridPathPlanner::GridPathPlanner(PartiallyKnownGrid* grid, bool use_adaptive_a_star) {
+AStar::AStar(PartiallyKnownGrid* grid, bool use_adaptive_a_star) {
 	height=grid->GetHeight();
 	width=grid->GetWidth();
 	adaptiveStar=use_adaptive_a_star;
@@ -25,7 +25,7 @@ GridPathPlanner::GridPathPlanner(PartiallyKnownGrid* grid, bool use_adaptive_a_s
 
 
 }
-GridPathPlanner::~GridPathPlanner(){
+AStar::~AStar(){
 
 	//std::cout<<"NumofExpanisons: "<<totalExpansions;
 	averageExpansions=totalExpansions/steps;
@@ -34,7 +34,7 @@ GridPathPlanner::~GridPathPlanner(){
 
 }
 
-xyLoc GridPathPlanner::GetNextMove(PartiallyKnownGrid* grid) {
+xyLoc AStar::GetNextMove(PartiallyKnownGrid* grid) {
 	
 
 	steps++;
@@ -260,7 +260,7 @@ xyLoc GridPathPlanner::GetNextMove(PartiallyKnownGrid* grid) {
 
 }
 
-int GridPathPlanner::GetNumExpansions() {
+int AStar::GetNumExpansions() {
 	// TODO
 	return numExpansions;
 }

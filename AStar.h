@@ -1,7 +1,7 @@
-#ifndef GRID_PATH_PLANNER_H
-#define GRID_PATH_PLANNER_H
+#ifndef ASTAR_H
+#define ASTAR_H
 
-#include "PartiallyKnownGrid.h"
+#include "AStar.h"
 
 
 struct node
@@ -11,10 +11,10 @@ struct node
 	float f, g, h;
 };
 
-class GridPathPlanner{
+class AStar{
 public:
-	GridPathPlanner(PartiallyKnownGrid* grid, bool use_adaptive_a_star = false);
-	~GridPathPlanner();
+	AStar(PartiallyKnownGrid* grid, bool use_adaptive_a_star = false);
+	~AStar();
 
 	xyLoc GetNextMove(PartiallyKnownGrid* grid);
 	int GetNumExpansions();

@@ -1,0 +1,15 @@
+12 14
+OOOOO....OOOOO
+OOOOO....OOOOO
+OOOOO....OOOOO
+OOOOO....OOOOO
+..............
+..............
+..............
+..............
+OOOOO....OOOOO
+OOOOO....OOOOO
+OOOOO....OOOOO
+OOOOO....OOOOO
+0 1
+4 0 0 5 

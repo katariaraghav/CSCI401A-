@@ -95,8 +95,8 @@ int moveType(int rowA, int colA, int rowB, int colB) //moving from a to b
 	{
 		return 0;
 	}
-	else if (rowB > rowA) return 1;
-	else return 3;
+	else if (rowB > rowA) return 3;
+	else return 1;
 }
 
 int h(int currRow, int currCol, int goalRow, int goalCol)
@@ -107,22 +107,22 @@ int h(int currRow, int currCol, int goalRow, int goalCol)
 vector<TimePoint> getSuccessors(TimePoint curr)
 {
 	vector<TimePoint> result;
-	if (curr.row>0 && board[curr.time + 1][2][curr.row-1][curr.col] == '.')
+	if (curr.row>0 && board[curr.time + 1][3][curr.row-1][curr.col] == '.')
 	{
 		TimePoint above(curr.row - 1, curr.col, curr.time + 1);
 		result.push_back(above);
 	}
-	if (curr.col<M-1 && board[curr.time + 1][3][curr.row][curr.col+1] == '.')
+	if (curr.col<M-1 && board[curr.time + 1][0][curr.row][curr.col+1] == '.')
 	{
 		TimePoint right(curr.row, curr.col+1, curr.time + 1);
 		result.push_back(right);
 	}
-	if (curr.row < N - 1 && board[curr.time + 1][0][curr.row+1][curr.col] == '.')
+	if (curr.row < N - 1 && board[curr.time + 1][1][curr.row+1][curr.col] == '.')
 	{
 		TimePoint below(curr.row + 1, curr.col, curr.time + 1);
 		result.push_back(below);
 	}
-	if (curr.col > 0 && board[curr.time + 1][1][curr.row][curr.col-1] == '.')
+	if (curr.col > 0 && board[curr.time + 1][2][curr.row][curr.col-1] == '.')
 	{
 		TimePoint left(curr.row, curr.col-1, curr.time + 1);
 		result.push_back(left);
@@ -190,7 +190,7 @@ vector<TimePoint> AStar(int startTime, int startRow, int startCol, int goalRow, 
 	return dummy;
 }
 
-void solveAgents()
+bool solveAgents()
 {
 	int time = 0, numAgents;
 	vector<Info> waiting;
@@ -207,7 +207,7 @@ void solveAgents()
 				{
 					//ERROR
 					cout << "DEADLOCK" << endl;
-					return;
+					return false;
 				}
 				for (int j = 0; j < path.size(); j++)
 				{
@@ -248,7 +248,7 @@ void solveAgents()
 			{
 				//ERROR
 				cout << "DEADLOCK" << endl;
-				return;
+				return false;
 			}
 			for (int j = 0; j < path.size(); j++)
 			{
@@ -268,7 +268,7 @@ void solveAgents()
 		}
 		time++;
 	}
-	return;
+	return true;
 }
 
 void printBoard()
@@ -303,8 +303,8 @@ int main()
 	start = std::clock();
 
 	readBoard();
-	solveAgents();
-	printBoard();
+	bool success = solveAgents();
+	if(success)	printBoard();
 
 	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
 

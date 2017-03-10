@@ -7,6 +7,7 @@
 #include <cmath>
 #include <algorithm>
 #include <map>
+#include <ctime>
 
 using namespace std;
 
@@ -17,7 +18,7 @@ h(x, y) = |x_goal - x| + |y_goal - y|
 /* input format:
 [#rows] [#cols]
 Description of intersection, . indicates unoccupied, O indicates obstacle
-[time] [k = # agents entering at this time] - repeat continuously
+[k = # agents entering at this time] - repeat continuously, input 0 if no agents enter at this time
 [start row] [start col] [goal row] [goal col] - repeat k times
 
 */
@@ -57,6 +58,10 @@ struct TimePoint {
 		col = -1;
 		time = -1;
 	}
+};
+
+struct Info {
+	int startRow, startCol, goalRow, goalCol;
 };
 typedef pair<int, TimePoint> PQElem;
 void readBoard()
@@ -187,13 +192,56 @@ vector<TimePoint> AStar(int startTime, int startRow, int startCol, int goalRow, 
 
 void solveAgents()
 {
-	int time, numAgents;
-	while (cin >> time >> numAgents)
+	int time = 0, numAgents;
+	vector<Info> waiting;
+	while (cin >> numAgents)
 	{
+		for (int i = 0; i < waiting.size(); i++)
+		{
+			if (board[time][0][waiting[i].startRow][waiting[i].startCol] == '.')
+			{
+				int startRow = waiting[i].startRow, startCol = waiting[i].startCol, goalRow = waiting[i].goalRow, goalCol = waiting[i].goalCol;
+				vector<TimePoint> path = AStar(time, startRow, startCol, goalRow, goalCol);
+				//update board
+				if (path.empty())
+				{
+					//ERROR
+					cout << "DEADLOCK" << endl;
+					return;
+				}
+				for (int j = 0; j < path.size(); j++)
+				{
+					for (int k = 0; k < 4; k++)
+					{
+						board[path[j].time][k][path[j].row][path[j].col] = 'A';
+					}
+				}
+				for (int j = 1; j < path.size(); j++)
+				{
+					int blockDir = moveType(path[j - 1].row, path[j - 1].col, path[j].row, path[j].col);
+					if (blockDir != -1)
+					{
+						board[path[j].time][blockDir][path[j - 1].row][path[j - 1].col] = 'A';
+					}
+				}
+				waiting.erase(waiting.begin() + i);
+				i--;
+			}
+		}
 		for (int i = 0; i < numAgents; i++)
 		{
 			int startRow, startCol, goalRow, goalCol;
 			cin >> startRow >> startCol >> goalRow >> goalCol;
+			if (board[time][0][startRow][startCol] != '.')
+			{
+				Info agent;
+				agent.startRow = startRow;
+				agent.startCol = startCol;
+				agent.goalRow = goalRow;
+				agent.goalCol = goalCol;
+				waiting.push_back(agent);
+				continue;
+			}
 			vector<TimePoint> path = AStar(time, startRow, startCol, goalRow, goalCol);
 			//update board
 			if (path.empty())
@@ -218,7 +266,7 @@ void solveAgents()
 				}
 			}
 		}
-		
+		time++;
 	}
 	return;
 }
@@ -249,9 +297,18 @@ void printBoard()
 }
 int main()
 {
+	std::clock_t start;
+	double duration;
+
+	start = std::clock();
+
 	readBoard();
 	solveAgents();
 	printBoard();
+
+	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+
+	std::cout << "# seconds: " << duration << '\n';
     return 0;
 }
 

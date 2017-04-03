@@ -9,11 +9,7 @@
 #include <map>
 #include <ctime>
 #include <utility>
-
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
-namespace pt = boost::property_tree;
-#include <boost/tokenizer.hpp>
+#include <fstream>
 
 
 using namespace std;
@@ -35,15 +31,7 @@ int N, M; // #rows, #cols
 // [4] dimension is directonal, 0 = above, 1 = right, 2 = below, 3 = left
 vector<vector<char> > board[MAXTIME][4];
 
-struct PathPoint
-{
-	int x;
-	int y;
-	int time;
-};
 
-vector<pair<int,vector<PathPoint>>> paths;
-//vector of agent number to path pairs 
 
 int currTime = 0;
 bool canMoveTo(int row, int col, int time, int movDir)
@@ -262,9 +250,7 @@ bool solveAgents()
 			}
 			vector<TimePoint> path = AStar(time, startRow, startCol, goalRow, goalCol);
 			
-			pair<int,vector<PathPoint> ptreePath;
-			ptreePath.first = i;
-
+		
 			//update board
 			if (path.empty())
 			{
@@ -275,12 +261,7 @@ bool solveAgents()
 			for (int j = 0; j < path.size(); j++)
 			{
 
-				PathPoint pathPoint;
-				pathPoint.x = path[j].col;
-				pathPoint.y = path[j].row;
-				pathPoint.time = path[j].time
-				ptreePath.second.push_back(pathPoint);
-
+			
 				for (int k = 0; k < 4; k++)
 				{
 					board[path[j].time][k][path[j].row][path[j].col] = 'A';
@@ -294,7 +275,7 @@ bool solveAgents()
 					board[path[j].time][blockDir][path[j - 1].row][path[j - 1].col] = 'A';
 				}
 			}
-			paths.push_back(ptreePath);
+
 		}
 		time++;
 	}
@@ -325,6 +306,32 @@ void printBoard()
 		cout << endl << endl;
 	}
 }
+
+void printBoardToFile()
+{
+	ofstream outfile("output.txt");
+	for (int t = 0; t < 30; t++)
+	{
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < M; j++)
+			{
+				if (board[t][0][i][j] == 'A'&&board[t][1][i][j] == 'A'&&board[t][2][i][j] == 'A'&&board[t][3][i][j] == 'A')
+				{
+					cout << 'A';
+				}
+				else if (board[t][0][i][j] == '0')
+				{
+					cout << '0';
+				}
+				else cout << '.';
+			}
+			cout << endl;
+		}
+		cout << endl << endl;
+	}
+}
+
 int main()
 {
 	std::clock_t start;
@@ -334,38 +341,14 @@ int main()
 
 	readBoard();
 	bool success = solveAgents();
-	if(success)	printBoard();
+	if(success)	
+	{
+		printBoard();
+		printBoardToFile();
+	}
 
 	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
 
 	std::cout << "# seconds: " << duration << '\n';
     return 0;
-}
-
-boost::property_tree getTree()
-{
-	using namespace pt;
-
-	ptree pt;
-	ptree agents;
-	for (int i = 0; i < paths.size(); i++)
-	{
-		ptree agent;
-		agent.put("name", paths[i].first);
-		agent.put("group", paths[i].first);
-		ptree path;
-		for (int p = 0; p < paths[i].second.size(); p++)
-		{
-			ptree pathentry;
-			pathentry.put("x",paths[i].second[p].x);
-			pathentry.put("y",paths[i].second[p].y);
-			pathentry.put("time",paths[i].second[p].time);
-
-			path.push_back(std::make_pair("",pathentry));
-		}
-		agent.add_child("path",path);
-		agents.push_back(std::make_pair("",agent));
-	}
-	pt.add_child("agents",agents);
-	return pt;
 }

@@ -8,8 +8,8 @@
 #include <algorithm>
 #include <map>
 #include <ctime>
-#include <utility>
-#include <fstream>
+				  
+				  
 
 
 using namespace std;
@@ -25,15 +25,18 @@ Description of intersection, . indicates unoccupied, O indicates obstacle
 [start row] [start col] [goal row] [goal col] - repeat k times
 
 */
-
+int entryTimes = 0;
+int exitTimes = 0;
+int totalAgents = 0;
 const int MAXTIME = 500;
 int N, M; // #rows, #cols
 // [4] dimension is directonal, 0 = above, 1 = right, 2 = below, 3 = left
 vector<vector<char> > board[MAXTIME][4];
-
-
-
 int currTime = 0;
+
+int bPIndex = 0;
+
+				 
 bool canMoveTo(int row, int col, int time, int movDir)
 {
 	return board[time][(movDir+2)%4][row][col] != '.';
@@ -202,6 +205,8 @@ bool solveAgents()
 	vector<Info> waiting;
 	while (cin >> numAgents)
 	{
+		totalAgents += numAgents;
+		entryTimes += numAgents*time;
 		for (int i = 0; i < waiting.size(); i++)
 		{
 			if (board[time][0][waiting[i].startRow][waiting[i].startCol] == '.')
@@ -219,7 +224,7 @@ bool solveAgents()
 				{
 					for (int k = 0; k < 4; k++)
 					{
-						board[path[j].time][k][path[j].row][path[j].col] = 'A';
+						board[path[j].time][k][path[j].row][path[j].col] = '1'+bPIndex;
 					}
 				}
 				for (int j = 1; j < path.size(); j++)
@@ -227,11 +232,13 @@ bool solveAgents()
 					int blockDir = moveType(path[j - 1].row, path[j - 1].col, path[j].row, path[j].col);
 					if (blockDir != -1)
 					{
-						board[path[j].time][blockDir][path[j - 1].row][path[j - 1].col] = 'A';
+						board[path[j].time][blockDir][path[j - 1].row][path[j - 1].col] = '1' + bPIndex;
 					}
 				}
+				exitTimes += time + path.size();
 				waiting.erase(waiting.begin() + i);
 				i--;
+				bPIndex = (bPIndex+1)%7;
 			}
 		}
 		for (int i = 0; i < numAgents; i++)
@@ -249,8 +256,8 @@ bool solveAgents()
 				continue;
 			}
 			vector<TimePoint> path = AStar(time, startRow, startCol, goalRow, goalCol);
-			
-		
+   
+  
 			//update board
 			if (path.empty())
 			{
@@ -261,10 +268,10 @@ bool solveAgents()
 			for (int j = 0; j < path.size(); j++)
 			{
 
-			
+   
 				for (int k = 0; k < 4; k++)
 				{
-					board[path[j].time][k][path[j].row][path[j].col] = 'A';
+					board[path[j].time][k][path[j].row][path[j].col] = '1'+bPIndex;
 				}
 			}
 			for (int j = 1; j < path.size(); j++)
@@ -272,10 +279,11 @@ bool solveAgents()
 				int blockDir = moveType(path[j-1].row, path[j-1].col, path[j].row, path[j].col);
 				if (blockDir != -1)
 				{
-					board[path[j].time][blockDir][path[j - 1].row][path[j - 1].col] = 'A';
+					board[path[j].time][blockDir][path[j - 1].row][path[j - 1].col] = '1'+bPIndex;
 				}
 			}
-
+			exitTimes += time + path.size();
+			bPIndex = (bPIndex+1)%7;
 		}
 		time++;
 	}
@@ -284,29 +292,33 @@ bool solveAgents()
 
 void printBoard()
 {
-	for (int t = 0; t < 30; t++)
+	for (int t = 0; t < 50; t++)
 	{
 		cout << "TIME: " << t << endl;
 		for (int i = 0; i < N; i++)
 		{
 			for (int j = 0; j < M; j++)
 			{
-				if (board[t][0][i][j] == 'A'&&board[t][1][i][j] == 'A'&&board[t][2][i][j] == 'A'&&board[t][3][i][j] == 'A')
+				if (board[t][0][i][j] != '0' && board[t][0][i][j]!='.' &&
+					board[t][1][i][j] != '0' && board[t][1][i][j]!='.' &&
+					board[t][2][i][j] != '0' && board[t][2][i][j]!='.' &&
+					board[t][3][i][j] != '0' && board[t][3][i][j]!='.')
 				{
-					cout << 'A';
-				}
-				else if (board[t][0][i][j] == '0')
-				{
-					cout << '0';
-				}
-				else cout << '.';
-			}
-			cout << endl;
-		}
-		cout << endl << endl;
-	}
-}
+				 
+	 
+					cout << board[t][0][i][j];
+	 
+				 
+	 
+					 
+	
+				
+   
+					   
+  
+ 
 
+<<<<<<< HEAD
 void printBoardToFile()
 {
 	ofstream outfile("output.txt");
@@ -319,6 +331,20 @@ void printBoardToFile()
 				if (board[t][0][i][j] == 'A'&&board[t][1][i][j] == 'A'&&board[t][2][i][j] == 'A'&&board[t][3][i][j] == 'A')
 				{
 					outfile << 'A';
+=======
+					   
+ 
+								
+							 
+  
+							 
+   
+							  
+	
+																											   
+	 
+				 
+>>>>>>> 67b0d3e1200b15b4d25636aff2f748fe855911b7
 				}
 				else if (board[t][0][i][j] == '0')
 				{
@@ -341,14 +367,15 @@ int main()
 
 	readBoard();
 	bool success = solveAgents();
-	if(success)	
-	{
-		printBoard();
-		printBoardToFile();
-	}
+	if(success)	printBoard();
+  
+			   
+					 
+  
 
 	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
 
-	std::cout << "# seconds: " << duration << '\n';
+	cout << "# seconds: " << duration << endl << "Average time spent in intersection: " << (((double)exitTimes - entryTimes) / totalAgents)-1;
     return 0;
 }
+

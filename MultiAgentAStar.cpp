@@ -318,17 +318,17 @@ void printBoardToFile()
 			{
 				if (board[t][0][i][j] == 'A'&&board[t][1][i][j] == 'A'&&board[t][2][i][j] == 'A'&&board[t][3][i][j] == 'A')
 				{
-					cout << 'A';
+					outfile << 'A';
 				}
 				else if (board[t][0][i][j] == '0')
 				{
-					cout << '0';
+					outfile << '0';
 				}
-				else cout << '.';
+				else outfile << '.';
 			}
-			cout << endl;
+			outfile << endl;
 		}
-		cout << endl << endl;
+		outfile << endl;
 	}
 }
 

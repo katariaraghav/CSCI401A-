@@ -19,7 +19,7 @@ protected:
 	void DrawGrid(wxDC& dc);
     void DrawIntersectionGrid(wxDC& dc);
     void DrawCars(wxDC& dc);
-    void DrawCar(wxDC& dc, int x, int y);
+    void DrawCar(wxDC& dc, int x, int y, int input);
  
 	DECLARE_EVENT_TABLE()
 	

@@ -1,4 +1,4 @@
-Input.txt contains a working test case. Deadlock.txt is a sample deadlock case.
+Input.txt contains a working test case. Deadlock.txt is a sample deadlock case. TestLarge.txt contains a large size test case. Big.txt is outdated but is still important; it helps create additional test cases. 
 
 Description of input (sample is deadlock.txt):
 

@@ -69,15 +69,22 @@ void IntersectionDrawPanel::DrawCars(wxDC& dc)
                 dc.SetPen(*wxBLACK_PEN);
                 dc.DrawPolygon(4,points);
             }
-            else if(intersection[y][x] == 'A')
+            else if(intersection[y][x] == '.')
             {
-                DrawCar(dc, x, y);
+                dc.SetBrush(*wxWHITE_BRUSH);
+		dc.DrawRectangle(x, y, 15, 15);
+
             }
+	    else
+	    {
+		int input = static_cast<int>(intersection[y][x]);
+		DrawCar(dc, x, y, input);
+	    }
         }
     }
 }
 
-void IntersectionDrawPanel::DrawCar(wxDC& dc, int x, int y)
+void IntersectionDrawPanel::DrawCar(wxDC& dc, int x, int y, int input)
 {
     x = x*30 + 10;
     y = y*30 + 10;
@@ -103,7 +110,17 @@ void IntersectionDrawPanel::DrawCar(wxDC& dc, int x, int y)
     points[7] = wxPoint(x + 25, y + 20);
     points[8] = wxPoint(x + 26, y + 25);
     
-    dc.SetBrush(*wxRED_BRUSH);
+    //dc.SetBrush(*wxRED_BRUSH);
+    switch(input)
+    {
+	case 1: dc.SetBrush(*wxRED_BRUSH);
+	case 2: dc.SetBrush(*wxBLUE_BRUSH);
+	case 3: dc.SetBrush(*wxYELLOW_BRUSH);
+	case 4: dc.SetBrush(*wxCYAN_BRUSH);
+	case 5: dc.SetBrush(*wxLIGHT_GREY_BRUSH);
+	case 6: dc.SetBrush(*wxGREEN_BRUSH);
+	case 7: dc.SetBrush(*wxBLACK_BRUSH);
+    }
     dc.DrawPolygon(9,points);
     
 }

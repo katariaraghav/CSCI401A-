@@ -1,3 +1,5 @@
+Input.txt contains a working test case. Deadlock.txt is a sample deadlock case.
+
 Description of input (sample is deadlock.txt):
 
 3 8         // [#rows] [#cols]

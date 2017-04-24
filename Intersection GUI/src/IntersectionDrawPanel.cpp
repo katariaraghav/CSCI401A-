@@ -3,6 +3,7 @@
 #include <wx/dcclient.h>
 #include <wx/sizer.h>
 #include "World.h"
+#include <iostream>
 
 BEGIN_EVENT_TABLE(IntersectionDrawPanel, wxPanel)
 	EVT_PAINT(IntersectionDrawPanel::PaintEvent)
@@ -71,13 +72,18 @@ void IntersectionDrawPanel::DrawCars(wxDC& dc)
             }
             else if(intersection[y][x] == '.')
             {
-                dc.SetBrush(*wxWHITE_BRUSH);
-                dc.DrawRectangle(x, y, 15, 15);
+                //dc.SetBrush(*wxWHITE_BRUSH);
+                //dc.DrawRectangle(x, y, 15, 15);
 
             }
             else
             {
                 int input = static_cast<int>(intersection[y][x]);
+                input%=7;
+                if(intersection[y][x] == 'A')
+                {
+                    input = 1;
+                }
                 DrawCar(dc, x, y, input);
             }
         }
@@ -98,6 +104,26 @@ void IntersectionDrawPanel::DrawCar(wxDC& dc, int x, int y, int input)
     dc.DrawCircle(x + 22, y + 25,3); // front tire
     dc.DrawCircle(x + 9, y + 25,3); // back tire
     
+    
+    dc.SetBrush(*wxRED_BRUSH);
+
+    switch(input)
+    {
+        case 1: dc.SetBrush(*wxRED_BRUSH);
+            break;
+        case 2: dc.SetBrush(*wxBLUE_BRUSH);
+            break;
+        case 3: dc.SetBrush(*wxYELLOW_BRUSH);
+            break;
+        case 4: dc.SetBrush(*wxCYAN_BRUSH);
+            break;
+        case 5: dc.SetBrush(*wxLIGHT_GREY_BRUSH);
+            break;
+        case 6: dc.SetBrush(*wxGREEN_BRUSH);
+            break;
+        case 7: dc.SetBrush(*wxRED_BRUSH);
+    }
+    
     // car
     wxPoint points[9];
     points[0] = wxPoint(x + 26,y + 25); // bottom right
@@ -110,20 +136,8 @@ void IntersectionDrawPanel::DrawCar(wxDC& dc, int x, int y, int input)
     points[7] = wxPoint(x + 25, y + 20);
     points[8] = wxPoint(x + 26, y + 25);
     
-    //dc.SetBrush(*wxRED_BRUSH);
-    switch(input)
-    {
-	case 1: dc.SetBrush(*wxRED_BRUSH);
-	case 2: dc.SetBrush(*wxBLUE_BRUSH);
-	case 3: dc.SetBrush(*wxYELLOW_BRUSH);
-	case 4: dc.SetBrush(*wxCYAN_BRUSH);
-	case 5: dc.SetBrush(*wxLIGHT_GREY_BRUSH);
-	case 6: dc.SetBrush(*wxGREEN_BRUSH);
-	case 7: dc.SetBrush(*wxBLACK_BRUSH);
-    }
-    dc.SetBrush(*wxRED_BRUSH);
+
     dc.DrawPolygon(9,points);
-    
 }
 
 void IntersectionDrawPanel::DrawIntersectionGrid(wxDC& dc)

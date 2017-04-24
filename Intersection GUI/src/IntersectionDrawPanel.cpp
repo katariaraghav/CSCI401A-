@@ -72,14 +72,14 @@ void IntersectionDrawPanel::DrawCars(wxDC& dc)
             else if(intersection[y][x] == '.')
             {
                 dc.SetBrush(*wxWHITE_BRUSH);
-		dc.DrawRectangle(x, y, 15, 15);
+                dc.DrawRectangle(x, y, 15, 15);
 
             }
-	    else
-	    {
-		int input = static_cast<int>(intersection[y][x]);
-		DrawCar(dc, x, y, input);
-	    }
+            else
+            {
+                int input = static_cast<int>(intersection[y][x]);
+                DrawCar(dc, x, y, input);
+            }
         }
     }
 }
@@ -121,6 +121,7 @@ void IntersectionDrawPanel::DrawCar(wxDC& dc, int x, int y, int input)
 	case 6: dc.SetBrush(*wxGREEN_BRUSH);
 	case 7: dc.SetBrush(*wxBLACK_BRUSH);
     }
+    dc.SetBrush(*wxRED_BRUSH);
     dc.DrawPolygon(9,points);
     
 }
